@@ -4,6 +4,20 @@ import (
 	"reflect"
 )
 
+func getSummarizableValueWithKey(key string, value reflect.Value) float64 {
+	if key == "" && value.Comparable() {
+		return toFloat(value)
+	}
+
+	if key != "" && value.Kind() == reflect.Interface || value.Kind() == reflect.Struct {
+		if structField := value.FieldByName(key); value.Comparable() {
+			return toFloat(structField)
+		}
+	}
+
+	return 0
+}
+
 func toFloat(value reflect.Value) float64 {
 	switch true {
 	case value.CanInt():
